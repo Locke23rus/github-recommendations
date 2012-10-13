@@ -32,4 +32,32 @@ class User < ActiveRecord::Base
     end
   end
 
+  def stars_and_repos(user = login)
+    client.starred(user) + client.repositories(user)
+  end
+
+  def starred(user = login)
+    i = 1
+    starred_repos = []
+    begin
+      starred_repos += client.starred(user, :per_page => 100, :page => i)
+      i += 1
+    end while starred_repos.size % 100 == 0
+    starred_repos
+  end
+
+  def repositories(user = login)
+    i = 1
+    repositories = []
+    begin
+      repositories += client.repos(user, :per_page => 100, :page => i)
+      i += 1
+    end while repositories.size % 100 == 0
+    repositories.map { |h| i[:fork] ? client.repo(h[:full_name])[:source] : h }
+  end
+
+  def client
+    @client ||= Octokit::Client.new(:login => login, :oauth_token => token)
+  end
+
 end
