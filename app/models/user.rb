@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
-  # attr_accessible :title, :body
+
+  has_many :recommendations, :dependent => :destroy
+  has_many :skipped_recommendations, :class_name => 'Recommendation', :conditions => 'skip = 1', :dependent => :destroy
 
   validates :uid, :presence => true, :uniqueness => true
   validates :login, :presence => true, :uniqueness => true
