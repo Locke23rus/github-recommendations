@@ -11,14 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121013135105) do
+ActiveRecord::Schema.define(:version => 20121013141512) do
 
   create_table "recommendations", :force => true do |t|
     t.integer  "user_id"
     t.integer  "repo_id"
-    t.integer  "score"
+    t.integer  "score",      :default => 0
     t.boolean  "skip",       :default => false
-    t.integer  "skip_type"
+    t.integer  "skip_type",  :default => 0
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false
   end
