@@ -12,6 +12,11 @@ class Recommendation < ActiveRecord::Base
     :auto => 2
   }
 
+  scope :skipped, where(:skip => true)
+  scope :autoskipped, skipped.where(:skip_type => SKIP_TYPES[:auto])
+  scope :available, where(:skip => false).order('score DESC')
+
+
   def prepare_score
     self.scores.delete_all
 
@@ -68,6 +73,12 @@ class Recommendation < ActiveRecord::Base
         score.user_id = user_id
       end
     end
+  end
+
+  def prepare(user, repo)
+    self.user = user
+    self.repo = repo
+    save
   end
 
 end

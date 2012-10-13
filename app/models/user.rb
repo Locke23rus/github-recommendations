@@ -36,39 +36,45 @@ class User < ActiveRecord::Base
 
   def prepare_stars_and_repos(user = login)
     stars_and_repos = fetch_starred(user) + fetch_repositories(user)
-    stars_and_repos.map do |repo|
+    stars_and_repos.uniq { |o| o[:id] }.map do |repo|
       Repo.find_or_create_with_github!(repo)
     end
   end
 
   def fetch_starred(user = login)
     i = 1
-    starred = []
-    begin
-      starred += client.starred(user, :per_page => 100, :page => i)
+    objects = []
+    loop do
+      turn = client.starred(user, :per_page => 100, :page => i)
+      objects += turn
       i += 1
-    end while starred.size % 100 == 0
-    starred
+      break if turn.size < 100
+    end
+    objects
   end
 
   def fetch_repositories(user = login)
     i = 1
-    repositories = []
-    begin
-      repositories += client.repos(user, :per_page => 100, :page => i)
+    objects = []
+    loop do
+      turn = client.repos(user, :per_page => 100, :page => i)
+      objects += turn
       i += 1
-    end while repositories.size % 100 == 0
-    repositories.map { |o| o[:fork] ? client.repo(o[:full_name])[:source] : o }
+      break if turn.size < 100
+    end
+    objects.map { |o| o[:fork] ? client.repo(o[:full_name])[:source] : o }
   end
 
   def fetch_followings(user = login)
     i = 1
-    users = []
-    begin
-      users += client.following(user, :per_page => 100, :page => i)
+    objects = []
+    loop do
+      turn = client.following(user, :per_page => 100, :page => i)
+      objects += turn
       i += 1
-    end while users.size % 100 == 0
-    users
+      break if turn.size < 100
+    end
+    objects
   end
 
   def prepare_followings(user = login)
@@ -87,6 +93,28 @@ class User < ActiveRecord::Base
 
   def client
     @client ||= Octokit::Client.new(:login => login, :oauth_token => token)
+  end
+
+  def prepare_skips
+    transaction do
+      recommendations.autoskipped.destroy_all
+
+      prepare_stars_and_repos.each do |repo|
+        recommendations.create! do |recommendation|
+          recommendation.repo = repo
+          recommendation.skip = true
+          recommendation.skip_type = Recommendation::SKIP_TYPES[:auto]
+        end
+      end
+    end
+  end
+
+  def prepare_recommendations
+    prepare_following.map do |user|
+      prepare_stars_and_repos(user.login).each do |repo|
+        Recommendation.new.prepare(self, repo)
+      end
+    end
   end
 
 end
