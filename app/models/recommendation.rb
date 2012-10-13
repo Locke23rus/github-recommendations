@@ -12,4 +12,62 @@ class Recommendation < ActiveRecord::Base
     :auto => 2
   }
 
+  def prepare_score
+    self.scores.delete_all
+
+    user_ids = by_owner(self.user.following_ids)
+    user_ids = by_collaborators(user_ids)
+    user_ids = by_forks(user_ids)
+    by_stars(user_ids)
+
+    self.score = self.scores.inject(0) {|sum, score| sum + score.value }
+    self.save!
+  end
+
+  def by_owner(user_ids)
+    owner_id = (user_ids & [self.repo.owner_id]).first
+    if owner_id.present?
+      self.scores.build do |score|
+        score.action = 0
+        score.user_id = owner_id
+      end
+    end
+    user_ids - [owner_id]
+  end
+
+  def by_collaborators(user_ids)
+    collaborator_ids = user_ids & self.repo.collaborator_ids(self.user)
+
+    collaborator_ids.each do |user_id|
+      self.scores.build do |score|
+        score.action = 1
+        score.user_id = user_id
+      end
+    end
+
+    user_ids - [collaborator_ids]
+  end
+
+  def by_forks(user_ids)
+    owner_ids = user_ids & self.repo.forks_owner_ids(user)
+
+    owner_ids.each do |user_id|
+      self.scores.build do |score|
+        score.action = 2
+        score.user_id = user_id
+      end
+    end
+  end
+
+  def by_stars(user_ids)
+    stargazer_ids = user_ids & self.repo.stargazers_ids(user)
+
+    stargazer_ids.each do |user_id|
+      self.scores.build do |score|
+        score.action = 3
+        score.user_id = user_id
+      end
+    end
+  end
+
 end

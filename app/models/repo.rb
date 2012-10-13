@@ -21,11 +21,53 @@ class Repo < ActiveRecord::Base
   end
 
   def url
-    "https://github.com/#{path}"
+    "https://github.com/#{full_name}"
   end
 
-  def path
-    "/#{owner.login}/#{name}"
+  def full_name
+    "#{owner.login}/#{name}"
+  end
+
+  def fetch_collaborators(user)
+    i = 1
+    users = []
+    begin
+      users += user.client.collaborators(full_name, :per_page => 100, :page => i)
+      i += 1
+    end while users.size % 100 == 0
+    users
+  end
+
+  def fetch_forks(user)
+    i = 1
+    users = []
+    begin
+      users += user.client.forks(full_name, :per_page => 100, :page => i)
+      i += 1
+    end while users.size % 100 == 0
+    users
+  end
+
+  def fetch_stars(user)
+    i = 1
+    users = []
+    begin
+      users += user.client.stargazers(full_name, :per_page => 100, :page => i)
+      i += 1
+    end while users.size % 100 == 0
+    users
+  end
+
+  def collaborator_ids(user)
+    fetch_collaborators(user).map {|hash| hash[:id] }
+  end
+
+  def forks_owner_ids(user)
+    fetch_forks(user).map {|hash| hash[:owner][:id] }
+  end
+
+  def stargazers_ids(user)
+    fetch_stars(user).map {|hash| hash[:id] }
   end
 
 end
