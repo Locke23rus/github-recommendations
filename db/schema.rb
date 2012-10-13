@@ -11,7 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121013082845) do
+ActiveRecord::Schema.define(:version => 20121013133001) do
+
+  create_table "repos", :force => true do |t|
+    t.string   "name"
+    t.string   "language"
+    t.integer  "owner_id"
+    t.integer  "forks_count", :default => 0
+    t.integer  "stars_count", :default => 0
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+  end
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false
