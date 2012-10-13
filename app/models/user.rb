@@ -20,4 +20,16 @@ class User < ActiveRecord::Base
     end
   end
 
+  def self.find_or_create_with_github!(hash)
+    find_by_uid(hash[:id]) || create_with_github!(hash)
+  end
+
+  def self.create_with_github!(hash)
+    create! do |user|
+      user.uid = hash[:id]
+      user.login = hash[:login]
+      user.avatar_url = hash[:avatar_url]
+    end
+  end
+
 end
