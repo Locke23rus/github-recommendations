@@ -1,4 +1,4 @@
-Githubrecomentation::Application.routes.draw do
+GithubRecommendation::Application.routes.draw do
 
   root :to => 'pages#welcome'
 
