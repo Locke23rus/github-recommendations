@@ -18,15 +18,17 @@ class Recommendation < ActiveRecord::Base
 
 
   def prepare_score
-    self.scores.delete_all
+    transaction do
+      self.scores.delete_all
 
-    user_ids = by_owner(self.user.following_ids)
-    user_ids = by_collaborators(user_ids)
-    user_ids = by_forks(user_ids)
-    by_stars(user_ids)
+      user_ids = by_owner(self.user.following_ids)
+      user_ids = by_collaborators(user_ids)
+      user_ids = by_forks(user_ids)
+      by_stars(user_ids)
 
-    self.score = self.scores.inject(0) {|sum, score| sum + score.value }
-    self.save!
+      self.score = self.scores.inject(0) {|sum, score| sum + score.value }
+      self.save!
+    end
   end
 
   def by_owner(user_ids)
@@ -50,7 +52,7 @@ class Recommendation < ActiveRecord::Base
       end
     end
 
-    user_ids - [collaborator_ids]
+    user_ids - collaborator_ids
   end
 
   def by_forks(user_ids)
@@ -62,6 +64,8 @@ class Recommendation < ActiveRecord::Base
         score.user_id = user_id
       end
     end
+
+    user_ids - owner_ids
   end
 
   def by_stars(user_ids)
@@ -73,12 +77,18 @@ class Recommendation < ActiveRecord::Base
         score.user_id = user_id
       end
     end
+
+    user_ids - stargazer_ids
   end
 
   def prepare(user, repo)
     self.user = user
     self.repo = repo
     save
+  end
+
+  def scores_by_group
+    scores.group_by(&:action_name)
   end
 
 end
