@@ -1,0 +1,11 @@
+development: &non_production_settings
+  github:
+    key: ''
+    secret: ''
+
+test:
+  <<: *non_production_settings
+  domain: test.host
+
+production:
+  <<: *non_production_settings
