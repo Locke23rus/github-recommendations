@@ -17,4 +17,5 @@ pickle-email-*.html
 .idea/
 /bin
 /config/database.yml
-config/app_config.yml
+/config/app_config.yml
+/db/schema.rb

@@ -1,6 +1,6 @@
 class Repo < ActiveRecord::Base
 
-  belongs_to :owner, :class_name => User.class.name
+  belongs_to :owner, :class_name => User.name
   has_many :recommendations, :dependent => :destroy
 
   validates :name, :presence => true, :uniqueness => { :scope => :owner_id }

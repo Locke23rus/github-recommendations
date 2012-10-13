@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
   has_many :repos, :foreign_key => 'owner_id'
   has_many :recommendations, :dependent => :destroy
   has_many :skipped_recommendations, :class_name => 'Recommendation', :conditions => 'skip = 1', :dependent => :destroy
+  has_many :user_followings, :dependent => :delete_all
+  has_many :followings, :through => :user_followings
 
   validates :login, :presence => true, :uniqueness => true
 
@@ -57,6 +59,30 @@ class User < ActiveRecord::Base
       i += 1
     end while repositories.size % 100 == 0
     repositories.map { |o| o[:fork] ? client.repo(o[:full_name])[:source] : o }
+  end
+
+  def fetch_followings(user = login)
+    i = 1
+    users = []
+    begin
+      users += client.following(user, :per_page => 100, :page => i)
+      i += 1
+    end while users.size % 100 == 0
+    users
+  end
+
+  def prepare_followings(user = login)
+    transaction do
+      self.user_followings.clear
+
+      fetch_followings(user).map do |source_following|
+        user = User.find_or_create_with_github!(source_following)
+        self.user_followings.create! do |user_following|
+          user_following.following = user
+        end
+        user
+      end
+    end
   end
 
   def client
