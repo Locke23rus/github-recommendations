@@ -1,1 +1,9 @@
 Hello, World!
+
+<div>
+  <% if signed_in? %>
+    <%= link_to 'Sign out', sign_out_path, :method => :delete %>
+  <% else %>
+    <%= link_to 'Sign in', '/auth/github' %>
+  <% end %>
+</div>
