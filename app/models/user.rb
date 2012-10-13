@@ -1,14 +1,14 @@
 class User < ActiveRecord::Base
 
+  has_many :repos, :foreign_key => 'owner_id'
   has_many :recommendations, :dependent => :destroy
   has_many :skipped_recommendations, :class_name => 'Recommendation', :conditions => 'skip = 1', :dependent => :destroy
 
-  validates :uid, :presence => true, :uniqueness => true
   validates :login, :presence => true, :uniqueness => true
 
   def self.create_with_omniauth!(auth)
     create! do |user|
-      user.uid = auth[:uid]
+      user.id = auth[:uid]
       user.login = auth[:info][:nickname]
       user.email = auth[:info][:email]
       user.full_name = auth[:info][:name]
@@ -21,39 +21,42 @@ class User < ActiveRecord::Base
   end
 
   def self.find_or_create_with_github!(hash)
-    find_by_uid(hash[:id]) || create_with_github!(hash)
+    find_by_id(hash[:id]) || create_with_github!(hash)
   end
 
   def self.create_with_github!(hash)
     create! do |user|
-      user.uid = hash[:id]
+      user.id = hash[:id]
       user.login = hash[:login]
       user.avatar_url = hash[:avatar_url]
     end
   end
 
-  def stars_and_repos(user = login)
-    client.starred(user) + client.repositories(user)
+  def prepare_stars_and_repos(user = login)
+    stars_and_repos = fetch_starred(user) + fetch_repositories(user)
+    stars_and_repos.map do |repo|
+      Repo.find_or_create_with_github!(repo)
+    end
   end
 
-  def starred(user = login)
+  def fetch_starred(user = login)
     i = 1
-    starred_repos = []
+    starred = []
     begin
-      starred_repos += client.starred(user, :per_page => 100, :page => i)
+      starred += client.starred(user, :per_page => 100, :page => i)
       i += 1
-    end while starred_repos.size % 100 == 0
-    starred_repos
+    end while starred.size % 100 == 0
+    starred
   end
 
-  def repositories(user = login)
+  def fetch_repositories(user = login)
     i = 1
     repositories = []
     begin
       repositories += client.repos(user, :per_page => 100, :page => i)
       i += 1
     end while repositories.size % 100 == 0
-    repositories.map { |h| i[:fork] ? client.repo(h[:full_name])[:source] : h }
+    repositories.map { |o| o[:fork] ? client.repo(o[:full_name])[:source] : o }
   end
 
   def client
