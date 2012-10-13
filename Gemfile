@@ -25,6 +25,8 @@ gem 'jquery-rails'
 # Deploy with Capistrano
 gem 'capistrano'
 
+gem 'octokit', '~> 1.17.1'
+
 group :test, :development do
   gem "rspec-rails", "~> 2.11.0"
 end
