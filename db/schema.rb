@@ -28,6 +28,16 @@ ActiveRecord::Schema.define(:version => 20121013133047) do
   add_index "recommendations", ["user_id", "repo_id"], :name => "index_recommendations_on_user_id_and_repo_id", :unique => true
   add_index "recommendations", ["user_id", "score"], :name => "index_recommendations_on_user_id_and_score"
 
+  create_table "repos", :force => true do |t|
+    t.string   "name"
+    t.string   "language"
+    t.integer  "owner_id"
+    t.integer  "forks_count", :default => 0
+    t.integer  "stars_count", :default => 0
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+  end
+
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false
     t.text     "data"
