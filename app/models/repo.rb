@@ -30,32 +30,38 @@ class Repo < ActiveRecord::Base
 
   def fetch_collaborators(user)
     i = 1
-    users = []
-    begin
-      users += user.client.collaborators(full_name, :per_page => 100, :page => i)
+    objects = []
+    loop do
+      turn = user.client.collaborators(full_name, :per_page => 100, :page => i)
+      objects += turn
       i += 1
-    end while users.size % 100 == 0
-    users
+      break if turn.size < 100
+    end
+    objects
   end
 
   def fetch_forks(user)
     i = 1
-    users = []
-    begin
-      users += user.client.forks(full_name, :per_page => 100, :page => i)
+    objects = []
+    loop do
+      turn = user.client.forks(full_name, :per_page => 100, :page => i)
+      objects += turn
       i += 1
-    end while users.size % 100 == 0
-    users
+      break if turn.size < 100
+    end
+    objects
   end
 
   def fetch_stars(user)
     i = 1
-    users = []
-    begin
-      users += user.client.stargazers(full_name, :per_page => 100, :page => i)
+    objects = []
+    loop do
+      turn = user.client.stargazers(full_name, :per_page => 100, :page => i)
+      objects += turn
       i += 1
-    end while users.size % 100 == 0
-    users
+      break if turn.size < 100
+    end
+    objects
   end
 
   def collaborator_ids(user)
