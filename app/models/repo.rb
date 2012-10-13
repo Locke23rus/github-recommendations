@@ -1,13 +1,13 @@
 class Repo < ActiveRecord::Base
 
-  belongs_to :owner, :class_name => User.class.name, :foreign_key => "owner_id"
+  belongs_to :owner, :class_name => User.class.name
   has_many :recommendations, :dependent => :destroy
 
   validates :name, :presence => true, :uniqueness => { :scope => :owner_id }
   validates :owner_id, :presence => true
 
   def self.find_or_create_with_github!(hash)
-    find_by_name_and_owner_id(hash[:name], hash[:owner][:id])
+    find_by_name_and_owner_id(hash[:name], hash[:owner][:id]) || create_with_github!(hash)
   end
 
   def self.create_with_github!(hash)
