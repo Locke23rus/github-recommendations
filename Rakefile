@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Githubrec::Application.load_tasks
+Githubrecomentation::Application.load_tasks
