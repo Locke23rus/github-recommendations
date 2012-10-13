@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
 
   def prepare_stars_and_repos(user = login)
     stars_and_repos = fetch_starred(user) + fetch_repositories(user)
-    stars_and_repos.map do |repo|
+    stars_and_repos.uniq { |o| o[:id] }.map do |repo|
       Repo.find_or_create_with_github!(repo)
     end
   end
@@ -61,6 +61,20 @@ class User < ActiveRecord::Base
 
   def client
     @client ||= Octokit::Client.new(:login => login, :oauth_token => token)
+  end
+
+  def prepare_skips
+    transaction do
+      recommendations.autoskipped.destroy_all
+
+      prepare_stars_and_repos.each do |repo|
+        recommendations.create! do |recommendation|
+          recommendation.repo = repo
+          recommendation.skip = true
+          recommendation.skip_type = Recommendation::SKIP_TYPES[:auto]
+        end
+      end
+    end
   end
 
 end

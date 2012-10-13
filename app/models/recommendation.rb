@@ -12,4 +12,7 @@ class Recommendation < ActiveRecord::Base
     :auto => 2
   }
 
+  scope :skipped, where(:skip => true)
+  scope :autoskipped, skipped.where(:skip_type => SKIP_TYPES[:auto])
+
 end
