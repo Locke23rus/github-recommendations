@@ -43,32 +43,38 @@ class User < ActiveRecord::Base
 
   def fetch_starred(user = login)
     i = 1
-    starred = []
-    begin
-      starred += client.starred(user, :per_page => 100, :page => i)
+    objects = []
+    loop do
+      turn = client.starred(user, :per_page => 100, :page => i)
+      objects += turn
       i += 1
-    end while starred.size % 100 == 0
-    starred
+      break if turn.size < 100
+    end
+    objects
   end
 
   def fetch_repositories(user = login)
     i = 1
-    repositories = []
-    begin
-      repositories += client.repos(user, :per_page => 100, :page => i)
+    objects = []
+    loop do
+      turn = client.repos(user, :per_page => 100, :page => i)
+      objects += turn
       i += 1
-    end while repositories.size % 100 == 0
-    repositories.map { |o| o[:fork] ? client.repo(o[:full_name])[:source] : o }
+      break if turn.size < 100
+    end
+    objects.map { |o| o[:fork] ? client.repo(o[:full_name])[:source] : o }
   end
 
   def fetch_followings(user = login)
     i = 1
-    users = []
-    begin
-      users += client.following(user, :per_page => 100, :page => i)
+    objects = []
+    loop do
+      turn = client.following(user, :per_page => 100, :page => i)
+      objects += turn
       i += 1
-    end while users.size % 100 == 0
-    users
+      break if turn.size < 100
+    end
+    objects
   end
 
   def prepare_followings(user = login)
@@ -99,6 +105,14 @@ class User < ActiveRecord::Base
           recommendation.skip = true
           recommendation.skip_type = Recommendation::SKIP_TYPES[:auto]
         end
+      end
+    end
+  end
+
+  def prepare_recommendations
+    prepare_following.map do |user|
+      prepare_stars_and_repos(user.login).each do |repo|
+        Recommendation.new.prepare(self, repo)
       end
     end
   end
