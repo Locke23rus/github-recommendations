@@ -16,7 +16,6 @@ class Recommendation < ActiveRecord::Base
   scope :autoskipped, skipped.where(:skip_type => SKIP_TYPES[:auto])
   scope :available, where(:skip => false).order('score DESC')
 
-
   def prepare_score
     self.scores.delete_all
 
