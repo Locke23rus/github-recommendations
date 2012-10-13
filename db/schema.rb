@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121013135105) do
+ActiveRecord::Schema.define(:version => 20121013140744) do
 
   create_table "recommendations", :force => true do |t|
     t.integer  "user_id"
@@ -38,13 +38,15 @@ ActiveRecord::Schema.define(:version => 20121013135105) do
     t.datetime "updated_at",                 :null => false
   end
 
+  add_index "repos", ["name", "owner_id"], :name => "index_repos_on_name_and_owner_id", :unique => true
+
   create_table "scores", :force => true do |t|
-    t.string   "value"
-    t.string   "action_type"
+    t.integer  "value",             :default => 0
+    t.integer  "action_type",       :default => 0
     t.integer  "recommendation_id"
     t.integer  "user_id"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
   end
 
   add_index "scores", ["recommendation_id"], :name => "index_scores_on_recommendation_id"
