@@ -23,12 +23,14 @@
   </div>
   <p><%#= repo.description %></p>
   <% recommendation.scores_by_group.each do |action_type, scores| %>
-    <div>
-      <%= action_type.titleize %>:
-      <% scores.each do |score| %>
-        <%= image_tag score.user.avatar_url, :size => '32x32', :title => score.user.login %>
-      <% end %>
-    </div>
+    <dl class="dl-horizontal scores">
+      <dt><%= action_type.titleize %>:</dt>
+      <dd>
+        <% scores.each do |score| %>
+          <%= image_tag score.user.avatar_url, :size => '30x30', :class => "avatar", :title => score.user.login %>
+        <% end %>
+      </dd>
+    </dl>
   <% end %>
 
   <hr/>

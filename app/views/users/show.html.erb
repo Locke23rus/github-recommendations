@@ -1,16 +1,17 @@
+<h4>Recommendations</h4>
 <hr>
-<div>
-  <form class="navbar-search pull-left">
-    <input type="text" class="search-query" placeholder="Filter <%= @user.login %>'s recomendations…">
-  </form>
+<!--<div>-->
+  <!--<form class="navbar-search pull-left">-->
+    <!--<input type="text" class="search-query" placeholder="Filter <%= @user.login %>'s recomendations…">-->
+  <!--</form>-->
 
-  <ul class="nav nav-pills pull-right">
-    <li class="disabled"><a href="#"><strong>All</strong></a></li>
-    <li><a href="#">Ruby</a></li>
-    <li><a href="#">Java Script</a></li>
-    <li><a href="#">Python</a></li>
-  </ul>
-</div>
+  <!--<ul class="nav nav-pills pull-right">-->
+    <!--<li class="disabled"><a href="#"><strong>All</strong></a></li>-->
+    <!--<li><a href="#">Ruby</a></li>-->
+    <!--<li><a href="#">Java Script</a></li>-->
+    <!--<li><a href="#">Python</a></li>-->
+  <!--</ul>-->
+<!--</div>-->
 
 <% if signed_in? %>
   <%= render @user.recommendations.available.limit(10) %>
