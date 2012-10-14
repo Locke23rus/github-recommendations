@@ -16,6 +16,10 @@ class Recommendation < ActiveRecord::Base
   scope :autoskipped, skipped.where(:skip_type => SKIP_TYPES[:auto])
   scope :available, where(:skip => false).order('score DESC')
 
+  def self.per_page
+    10
+  end
+
   def prepare_score
     transaction do
       self.scores.delete_all

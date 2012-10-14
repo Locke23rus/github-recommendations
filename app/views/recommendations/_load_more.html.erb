@@ -1,0 +1,8 @@
+<%- if next_page -%>
+  <%= button_to 'Load more',
+                user_recommendations_path(user.login, :format => :js, :page => next_page),
+                :class => 'btn',
+                :disable_with => "Loading...",
+                :method => :get,
+                :remote => true -%>
+<%- end -%>
