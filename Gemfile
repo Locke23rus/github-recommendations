@@ -30,6 +30,8 @@ gem 'capistrano'
 gem 'octokit', '~> 1.17.1'
 gem "airbrake"
 
+gem 'gravatar_image_tag'
+
 group :test, :development do
   gem "rspec-rails", "~> 2.11.0"
 end

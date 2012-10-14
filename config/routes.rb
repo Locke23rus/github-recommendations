@@ -9,4 +9,6 @@ GithubRecommendation::Application.routes.draw do
   put '/recommendation/:id/skip' => 'recommendation#skip', :as => 'skip_recommendation'
 
   mount Sidekiq::Web, at: '/sidekiq'
+
+  get "/:id" => "users#show", :as => :user
 end
