@@ -34,3 +34,7 @@ end
 group :production do
   gem 'therubyracer'
 end
+
+gem "sidekiq", "~> 2.3.3"
+gem 'sinatra', require: false
+gem 'slim'
