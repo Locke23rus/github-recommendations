@@ -56,7 +56,9 @@ class User < ActiveRecord::Base
     stars_and_repos = fetch_starred(user) + fetch_repositories(user)
     stars_and_repos.uniq { |o| o[:id] }.map do |repo|
       Repo.find_or_create_with_github!(repo)
-    end
+    end.sort_by do |repo|
+      repo.stars_count + repo.forks_count
+    end.reverse
   end
 
   def fetch_starred(user = login)
