@@ -42,39 +42,15 @@ class User < ActiveRecord::Base
   end
 
   def fetch_starred(user = login)
-    i = 1
-    objects = []
-    loop do
-      turn = client.starred(user, :per_page => 100, :page => i)
-      objects += turn
-      i += 1
-      break if turn.size < 100
-    end
-    objects.map { |o| o[:fork] ? client.repo(o[:full_name])[:source] : o }
+    client.fetch_starred(user)
   end
 
   def fetch_repositories(user = login)
-    i = 1
-    objects = []
-    loop do
-      turn = client.repos(user, :per_page => 100, :page => i)
-      objects += turn
-      i += 1
-      break if turn.size < 100
-    end
-    objects.map { |o| o[:fork] ? client.repo(o[:full_name])[:source] : o }
+    client.fetch_repositories(user)
   end
 
   def fetch_followings(user = login)
-    i = 1
-    objects = []
-    loop do
-      turn = client.following(user, :per_page => 100, :page => i)
-      objects += turn
-      i += 1
-      break if turn.size < 100
-    end
-    objects
+    client.fetch_followings(user)
   end
 
   def prepare_followings(user = login)
@@ -92,7 +68,7 @@ class User < ActiveRecord::Base
   end
 
   def client
-    @client ||= Octokit::Client.new(:login => login, :oauth_token => token)
+    @client ||= GithubClient.new(:login => login, :oauth_token => token)
   end
 
   def prepare_skips

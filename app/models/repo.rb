@@ -29,39 +29,15 @@ class Repo < ActiveRecord::Base
   end
 
   def fetch_collaborators(user)
-    i = 1
-    objects = []
-    loop do
-      turn = user.client.collaborators(full_name, :per_page => 100, :page => i)
-      objects += turn
-      i += 1
-      break if turn.size < 100
-    end
-    objects
+    user.client.fetch_collaborators(full_name)
   end
 
   def fetch_forks(user)
-    i = 1
-    objects = []
-    loop do
-      turn = user.client.forks(full_name, :per_page => 100, :page => i)
-      objects += turn
-      i += 1
-      break if turn.size < 100
-    end
-    objects
+    user.client.fetch_forks(full_name)
   end
 
-  def fetch_stars(user)
-    i = 1
-    objects = []
-    loop do
-      turn = user.client.stargazers(full_name, :per_page => 100, :page => i)
-      objects += turn
-      i += 1
-      break if turn.size < 100
-    end
-    objects
+  def fetch_stargazers(user)
+    user.client.fetch_stargazers(full_name)
   end
 
   def collaborator_ids(user)
@@ -73,7 +49,7 @@ class Repo < ActiveRecord::Base
   end
 
   def stargazers_ids(user)
-    fetch_stars(user).map {|hash| hash[:id] }
+    fetch_stargazers(user).map {|hash| hash[:id] }
   end
 
 end
