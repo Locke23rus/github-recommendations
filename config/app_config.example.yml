@@ -3,6 +3,9 @@ development: &non_production_settings
   github:
     key: ''
     secret: ''
+  sidekiq:
+    user: ''
+    password: ''
 
 test:
   <<: *non_production_settings
