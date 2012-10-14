@@ -5,5 +5,8 @@ GithubRecommendation::Application.routes.draw do
   match '/auth/github/callback' => 'sessions#create'
   delete '/sign_out' => 'sessions#destroy'
 
+  # Recommendations
+  put '/recommendation/:id/skip' => 'recommendation#skip', :as => 'skip_recommendation'
+
   mount Sidekiq::Web, at: '/sidekiq'
 end

@@ -91,4 +91,10 @@ class Recommendation < ActiveRecord::Base
     scores.group_by(&:action_name)
   end
 
+  def skip_by_user!
+    self.skip = true
+    self.skip_type = SKIP_TYPES[:user]
+    self.save!
+  end
+
 end

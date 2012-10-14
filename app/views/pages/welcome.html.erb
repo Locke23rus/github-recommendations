@@ -1,16 +1,20 @@
 <% if signed_in? %>
   <ul>
     <% current_user.recommendations.available.limit(10).each do |recommendation| %>
-      <% repo = recommendation.repo %>
       <li>
+        <% repo = recommendation.repo %>
         (<%= recommendation.score %>) <%= repo.full_name %> <%= "(#{repo.language})" if repo.language.presence %>
         <br />
         <% recommendation.scores_by_group.each do |action_type, scores| %>
-          <%= action_type.titleize %>: <br/>
-          <% scores.each do |score| %>
-            <%= image_tag score.user.avatar_url, :size => '32x32', :title => score.user.login %> <%= score.user.login %> <br/>
-          <% end %>
+          <div>
+            <%= action_type.titleize %>:
+            <% scores.each do |score| %>
+              <%= image_tag score.user.avatar_url, :size => '32x32', :title => score.user.login %>
+            <% end %>
+          </div>
         <% end %>
+
+        <%= link_to 'Skip', skip_recommendation_path(recommendation.id), :remote => true, :method => :put %>
       </li>
     <% end %>
   </ul>

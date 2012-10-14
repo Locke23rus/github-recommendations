@@ -22,7 +22,7 @@ class Score < ActiveRecord::Base
     0 => 'owner',
     1 => 'collaborators',
     2 => 'forks',
-    3 => 'starred'
+    3 => 'stars'
   }
 
   ACTION_TYPES = ACTION_NAMES.invert.symbolize_keys!
