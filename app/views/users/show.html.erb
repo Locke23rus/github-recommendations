@@ -14,5 +14,11 @@
 <!--</div>-->
 
 <% if signed_in? %>
-  <%= render @user.recommendations.available.limit(10) %>
+  <div class="js-list-recommendations">
+    <%- recommendations = @user.recommendations.available.paginate(:page => 1) -%>
+    <%= render recommendations %>
+  </div>
+  <div class="span8 pagination-centered js-load-more">
+    <%= render 'recommendations/load_more', :user => @user, :next_page => recommendations.next_page -%>
+  </div>
 <% end %>

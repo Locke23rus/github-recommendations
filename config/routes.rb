@@ -6,7 +6,8 @@ GithubRecommendation::Application.routes.draw do
   delete '/sign_out' => 'sessions#destroy'
 
   # Recommendations
-  put '/recommendation/:id/skip' => 'recommendation#skip', :as => 'skip_recommendation'
+  put '/recommendations/:id/skip' => 'recommendations#skip', :as => 'skip_recommendation'
+  get '/:user_id/recommendations' => 'recommendations#index', :as => 'user_recommendations'
 
   mount Sidekiq::Web, at: '/sidekiq'
 

@@ -1,0 +1,6 @@
+jQuery('.js-list-recommendations').append('<%=j render @recommendations %>');
+<%- if @recommendations.next_page.blank? -%>
+  jQuery('.js-load-more').hide();
+<%- else -%>
+  jQuery('.js-load-more').html('<%=j render 'recommendations/load_more', :user => current_user, :next_page => @recommendations.next_page %>');
+<%- end -%>
