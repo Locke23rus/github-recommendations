@@ -95,14 +95,20 @@
               <p><strong><%= @user.repos_count -%></strong> public repos</p>
             </div>
           </div><!--/span-->
-          <%- end -%>
+
           <div class="span9">
             <%= yield %>
           </div>
+          <%- else -%>
+            <div class="span12">
+              <%= yield %>
+            </div>
+          <%- end -%>
         </div><!--/row-->
       </div><!--/content-->
 
-      <footer>
+      <footer class="pull-center">
+        <br />
         <p>&copy; H2 Russia 2012</p>
       </footer>
 
@@ -111,7 +117,7 @@
     <!-- Javascripts
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="http://fgnass.github.com/spin.js/dist/spin.min.js"></script>
     <%= javascript_include_tag "application" %>
-
   </body>
 </html>

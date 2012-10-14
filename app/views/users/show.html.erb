@@ -13,12 +13,30 @@
   <!--</ul>-->
 <!--</div>-->
 
-<% if signed_in? %>
-  <div class="js-list-recommendations">
-    <%- recommendations = @user.recommendations.available.paginate(:page => 1) -%>
-    <%= render recommendations %>
+<%- if @user.followings_count > 0 -%>
+  <%- if @user.recommendations.available.count > 0 -%>
+    <div class="js-list-recommendations">
+      <%- recommendations = @user.recommendations.available.paginate(:page => 1) -%>
+      <%= render recommendations %>
+    </div>
+    <div class="span8 pagination-centered js-load-more">
+      <%= render 'recommendations/load_more', :user => @user, :next_page => recommendations.next_page -%>
+    </div>
+  <%- else -%>
+    <div class="pull-center">
+      <br><br><br><br>
+      <div id="spinner"></div>
+    </div>
+    <br><br><br><br><br><br>
+    <div class="pull-center">
+      <strong>Processing...</strong>
+    </div>
+    <script type="text/javascript">
+      setTimeout(function(){ window.location.reload(true) }, 15000);
+    </script>
+  <%- end -%>
+<%- else -%>
+  <div class="alert">
+    <strong>Sorry!</strong> Is not possible to make recommendations for you, because you do not have any followings on GitHub.
   </div>
-  <div class="span8 pagination-centered js-load-more">
-    <%= render 'recommendations/load_more', :user => @user, :next_page => recommendations.next_page -%>
-  </div>
-<% end %>
+<%- end -%>

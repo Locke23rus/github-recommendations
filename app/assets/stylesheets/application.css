@@ -11,3 +11,9 @@
  *= require_self
  *= require_tree .
  */
+
+#myCarousel {
+  width: 60%;
+  margin: 0 auto;
+  text-align: left
+}
