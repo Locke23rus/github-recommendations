@@ -84,6 +84,7 @@ class Recommendation < ActiveRecord::Base
     self.user = user
     self.repo = repo
     save
+    self
   end
 
   def scores_by_group

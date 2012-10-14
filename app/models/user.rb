@@ -1,3 +1,5 @@
+require 'github_client'
+
 class User < ActiveRecord::Base
 
   has_many :repos, :foreign_key => 'owner_id'
@@ -68,7 +70,7 @@ class User < ActiveRecord::Base
   end
 
   def client
-    @client ||= GithubClient.new(:login => login, :oauth_token => token)
+    @client ||= ::GithubClient.new(login, token)
   end
 
   def prepare_skips
@@ -91,6 +93,14 @@ class User < ActiveRecord::Base
         Recommendation.new.prepare(self, repo)
       end
     end
+  end
+
+  def activated?
+    authorized_at?
+  end
+
+  def processed?
+    activated? && processed_at?
   end
 
 end
