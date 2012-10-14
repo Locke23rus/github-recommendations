@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_filter :start_processing
   before_filter :find_user
 
   def show

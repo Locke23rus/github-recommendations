@@ -3,8 +3,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user, :signed_in?
 
-  before_filter :start_processing
-
   protected
 
   def current_user

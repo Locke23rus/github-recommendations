@@ -8,9 +8,7 @@ class RepoWorker
     following = User.find(following_id)
     user.prepare_stars_and_repos(following.login).each do |repo|
       recommendation = Recommendation.new.prepare(user, repo)
-      unless recommendation.new_record?
-        ScoreWorker.perform_async(recommendation.id)
-      end
+      ScoreWorker.perform_async(recommendation.id) if recommendation.id.present?
     end
   end
 end
