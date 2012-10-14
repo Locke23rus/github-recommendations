@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   end
 
   def start_processing
-    if signed_in? && !current_user.processed?
+    if signed_in? && current_user.outdated?
       current_user.update_attribute(:processed_at, DateTime.current)
       FollowingWorker.perform_async(current_user.id)
     end
