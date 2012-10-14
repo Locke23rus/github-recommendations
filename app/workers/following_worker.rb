@@ -2,6 +2,7 @@
 
 class FollowingWorker
   include Sidekiq::Worker
+  sidekiq_options queue: 'often'
 
   def perform(user_id)
     user = User.find(user_id)
