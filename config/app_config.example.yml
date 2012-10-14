@@ -1,4 +1,5 @@
 development: &non_production_settings
+  airbrake: ''
   github:
     key: ''
     secret: ''
