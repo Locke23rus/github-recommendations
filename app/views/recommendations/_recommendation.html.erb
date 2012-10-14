@@ -1,0 +1,18 @@
+<div class="span8 js-recommendation">
+  <% repo = recommendation.repo %>
+  <%= link_to repo.full_name, repo.url, :target => '_blank' %> <%= repo.language %>
+  <%= link_to '<i class="icon-remove"></i>'.html_safe, skip_recommendation_path(recommendation.id), :class => 'js-skip', :remote => true, :method => :put %>
+
+  <p><%= repo.description %></p>
+
+  <% recommendation.scores_by_group.each do |action_type, scores| %>
+    <div>
+      <%= action_type.titleize %>:
+      <% scores.each do |score| %>
+        <%= image_tag score.user.avatar_url, :size => '32x32', :title => score.user.login %>
+      <% end %>
+    </div>
+  <% end %>
+  <hr/>
+</div>
+
