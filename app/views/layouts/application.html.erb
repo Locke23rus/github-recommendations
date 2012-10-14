@@ -45,7 +45,7 @@
             <!--<span class="icon-bar"></span>-->
             <!--<span class="icon-bar"></span>-->
           <!--</a>-->
-          <a class="brand" href="#">GitHub Recommendation</a>
+          <a class="brand" href="/">GitHub Recommendation</a>
           <div class="container">
             <ul class="nav pull-right">
               <%- if signed_in? -%>
@@ -83,13 +83,13 @@
                                      :class => 'img-rounded nav-avatar') %>
               <h2><%= @user.login -%></h2>
 
-              <hr>
+              <!--<hr>-->
 
-              <ul class="unstyled">
-                <li><%= @user.login -%></li>
-                <li><%= @user.login -%></li>
-                <li><%= @user.login -%></li>
-              </ul>
+              <!--<ul class="unstyled">-->
+                <!--<li><%= @user.login -%></li>-->
+                <!--<li><%= @user.login -%></li>-->
+                <!--<li><%= @user.login -%></li>-->
+              <!--</ul>-->
 
               <hr>
               <p><strong><%= @user.repos_count -%></strong> public repos</p>
