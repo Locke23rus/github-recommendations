@@ -58,9 +58,9 @@
               <%- end -%>
               <li>
                 <% if signed_in? %>
-                  <%= link_to 'sign out', sign_out_path, :method => :delete %>
+                  <%= link_to 'Sign out', sign_out_path, :method => :delete %>
                 <% else %>
-                  <%= link_to 'sign in', '/auth/github' %>
+                  <%= link_to 'Sign in', '/auth/github' %>
                 <% end %>
               </li>
             </ul>
