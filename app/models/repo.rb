@@ -14,6 +14,7 @@ class Repo < ActiveRecord::Base
     create! do |repo|
       repo.owner_id = User.find_or_create_with_github!(hash[:owner]).id
       repo.name = hash[:name]
+      repo.description = hash[:description]
       repo.language = hash[:language]
       repo.forks_count = hash[:forks_count]
       repo.stars_count = hash[:watchers_count]

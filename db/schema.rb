@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121014123403) do
+ActiveRecord::Schema.define(:version => 20121014173131) do
 
   create_table "recommendations", :force => true do |t|
     t.integer  "user_id"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(:version => 20121014123403) do
     t.integer  "stars_count", :default => 0
     t.datetime "created_at",                 :null => false
     t.datetime "updated_at",                 :null => false
+    t.string   "description"
   end
 
   add_index "repos", ["name", "owner_id"], :name => "index_repos_on_name_and_owner_id", :unique => true
