@@ -115,8 +115,8 @@ class User < ActiveRecord::Base
     authorized_at?
   end
 
-  def processed?
-    activated? && processed_at?
+  def outdated?
+    processed_at.blank? || processed_at < 1.day.ago
   end
 
 end
