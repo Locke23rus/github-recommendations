@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
       i += 1
       break if turn.size < 100
     end
-    objects
+    objects.map { |o| o[:fork] ? client.repo(o[:full_name])[:source] : o }
   end
 
   def fetch_repositories(user = login)
@@ -110,7 +110,7 @@ class User < ActiveRecord::Base
   end
 
   def prepare_recommendations
-    prepare_following.map do |user|
+    prepare_followings.map do |user|
       prepare_stars_and_repos(user.login).each do |repo|
         Recommendation.new.prepare(self, repo)
       end

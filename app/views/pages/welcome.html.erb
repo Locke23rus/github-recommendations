@@ -18,7 +18,7 @@ Hello, World!
         <% recommendation.scores_by_group.each do |action_type, scores| %>
           <%= action_type.titleize %>: <br/>
           <% scores.each do |score| %>
-            <%= image_tag score.user.avatar_url, :size => '32x32' %> <%= score.user.login %> <br/>
+            <%= image_tag score.user.avatar_url, :size => '32x32', :title => score.user.login %> <%= score.user.login %> <br/>
           <% end %>
         <% end %>
       </li>
