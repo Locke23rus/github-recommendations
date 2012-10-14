@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121014203050) do
+ActiveRecord::Schema.define(:version => 20121014213116) do
 
   create_table "collaborators", :force => true do |t|
     t.integer  "repo_id"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(:version => 20121014203050) do
     t.string   "description"
     t.datetime "collaborators_processed_at"
     t.datetime "forks_processed_at"
+    t.datetime "stargazers_processed_at"
   end
 
   add_index "repos", ["name", "owner_id"], :name => "index_repos_on_name_and_owner_id", :unique => true
@@ -82,6 +83,15 @@ ActiveRecord::Schema.define(:version => 20121014203050) do
 
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
   add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
+
+  create_table "stargazers", :force => true do |t|
+    t.integer  "repo_id"
+    t.integer  "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "stargazers", ["repo_id"], :name => "index_stargazers_on_repo_id"
 
   create_table "user_followings", :force => true do |t|
     t.integer  "user_id"

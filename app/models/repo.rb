@@ -4,6 +4,7 @@ class Repo < ActiveRecord::Base
   has_many :recommendations, :dependent => :destroy
   has_many :collaborators, :dependent => :delete_all, :validate => false
   has_many :forks, :dependent => :delete_all, :validate => false
+  has_many :stargazers, :dependent => :delete_all, :validate => false
 
   validates :name, :presence => true, :uniqueness => { :scope => :owner_id }
   validates :owner_id, :presence => true
@@ -81,7 +82,22 @@ class Repo < ActiveRecord::Base
   end
 
   def stargazers_ids(user)
-    fetch_stargazers(user).map {|hash| hash[:id] }
+    if stargazers_outdated?
+      update_attribute :stargazers_processed_at, DateTime.current
+      user_ids = fetch_stargazers(user).map {|hash| hash[:id] }
+      transaction do
+        stargazers.delete_all
+        update_attribute :stars_count, user_ids.size
+        user_ids.each do |user_id|
+          stargazers.create do |star|
+            star.user_id = user_id
+          end
+        end
+      end
+      user_ids
+    else
+      stargazers.pluck(:user_id)
+    end
   end
 
   def collaborators_outdated?
@@ -92,5 +108,8 @@ class Repo < ActiveRecord::Base
     forks_processed_at.blank? || forks_processed_at < 1.day.ago
   end
 
+  def stargazers_outdated?
+    stargazers_processed_at.blank? || stargazers_processed_at < 1.day.ago
+  end
 
 end
