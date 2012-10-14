@@ -3,6 +3,7 @@ class Repo < ActiveRecord::Base
   belongs_to :owner, :class_name => User.name
   has_many :recommendations, :dependent => :destroy
   has_many :collaborators, :dependent => :delete_all, :validate => false
+  has_many :forks, :dependent => :delete_all, :validate => false
 
   validates :name, :presence => true, :uniqueness => { :scope => :owner_id }
   validates :owner_id, :presence => true
@@ -45,21 +46,38 @@ class Repo < ActiveRecord::Base
   def collaborator_ids(user)
     if collaborators_outdated?
       update_attribute :collaborators_processed_at, DateTime.current
-      collaborators.delete_all
-      collab_ids = fetch_collaborators(user).map { |hash| hash[:id] }
-      collab_ids.each do |user_id|
-        collaborators.create do |collaborator|
-          collaborator.user_id = user_id
+      user_ids = fetch_collaborators(user).map { |hash| hash[:id] }
+      transaction do
+        collaborators.delete_all
+        user_ids.each do |user_id|
+          collaborators.create do |collaborator|
+            collaborator.user_id = user_id
+          end
         end
       end
-      collab_ids
+      user_ids
     else
       collaborators.pluck(:user_id)
     end
   end
 
   def forks_owner_ids(user)
-    fetch_forks(user).map {|hash| hash[:owner][:id] }
+    if forks_outdated?
+      update_attribute :forks_processed_at, DateTime.current
+      user_ids = fetch_forks(user).map {|hash| hash[:owner][:id] }
+      transaction do
+        forks.delete_all
+        update_attribute :forks_count, user_ids.size
+        user_ids.each do |user_id|
+          forks.create do |fork|
+            fork.user_id = user_id
+          end
+        end
+      end
+      user_ids
+    else
+      forks.pluck(:user_id)
+    end
   end
 
   def stargazers_ids(user)
@@ -68,6 +86,10 @@ class Repo < ActiveRecord::Base
 
   def collaborators_outdated?
     collaborators_processed_at.blank? || collaborators_processed_at < 1.day.ago
+  end
+
+  def forks_outdated?
+    forks_processed_at.blank? || forks_processed_at < 1.day.ago
   end
 
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121014195249) do
+ActiveRecord::Schema.define(:version => 20121014203050) do
 
   create_table "collaborators", :force => true do |t|
     t.integer  "repo_id"
@@ -21,6 +21,15 @@ ActiveRecord::Schema.define(:version => 20121014195249) do
   end
 
   add_index "collaborators", ["repo_id"], :name => "index_collaborators_on_repo_id"
+
+  create_table "forks", :force => true do |t|
+    t.integer  "repo_id"
+    t.integer  "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "forks", ["repo_id"], :name => "index_forks_on_repo_id"
 
   create_table "recommendations", :force => true do |t|
     t.integer  "user_id"
@@ -47,6 +56,7 @@ ActiveRecord::Schema.define(:version => 20121014195249) do
     t.datetime "updated_at",                                :null => false
     t.string   "description"
     t.datetime "collaborators_processed_at"
+    t.datetime "forks_processed_at"
   end
 
   add_index "repos", ["name", "owner_id"], :name => "index_repos_on_name_and_owner_id", :unique => true
