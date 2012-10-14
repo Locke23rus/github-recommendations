@@ -2,6 +2,7 @@ class Repo < ActiveRecord::Base
 
   belongs_to :owner, :class_name => User.name
   has_many :recommendations, :dependent => :destroy
+  has_many :collaborators, :dependent => :delete_all, :validate => false
 
   validates :name, :presence => true, :uniqueness => { :scope => :owner_id }
   validates :owner_id, :presence => true
@@ -42,7 +43,19 @@ class Repo < ActiveRecord::Base
   end
 
   def collaborator_ids(user)
-    fetch_collaborators(user).map {|hash| hash[:id] }
+    if collaborators_outdated?
+      update_attribute :collaborators_processed_at, DateTime.current
+      collaborators.delete_all
+      collab_ids = fetch_collaborators(user).map { |hash| hash[:id] }
+      collab_ids.each do |user_id|
+        collaborators.create do |collaborator|
+          collaborator.user_id = user_id
+        end
+      end
+      collab_ids
+    else
+      collaborators.pluck(:user_id)
+    end
   end
 
   def forks_owner_ids(user)
@@ -52,5 +65,10 @@ class Repo < ActiveRecord::Base
   def stargazers_ids(user)
     fetch_stargazers(user).map {|hash| hash[:id] }
   end
+
+  def collaborators_outdated?
+    collaborators_processed_at.blank? || collaborators_processed_at < 1.day.ago
+  end
+
 
 end
