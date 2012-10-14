@@ -46,7 +46,7 @@
             <!--<span class="icon-bar"></span>-->
           <!--</a>-->
           <a class="brand" href="#">GitHub Recommendation</a>
-          <div class="container nav-collapse">
+          <div class="container">
             <ul class="nav pull-right">
               <%- if signed_in? -%>
                 <li>
@@ -67,7 +67,7 @@
             <form class="navbar-search pull-left">
               <input type="text" class="search-query" placeholder="Search">
             </form>
-          </div><!--/.nav-collapse -->
+          </div>
         </div>
       </div>
     </div>
@@ -75,24 +75,24 @@
     <div class="container">
       <div class="content">
         <div class="row">
-          <% if signed_in? %>
+          <% if defined?(@user) %>
           <div class="span3">
             <div class=" sidebar-nav">
-              <%= gravatar_image_tag(current_user.email,
+              <%= gravatar_image_tag(@user.email,
                                      :gravatar => {:size => 270 },
                                      :class => 'img-rounded nav-avatar') %>
-              <h2><%= current_user.login -%></h2>
+              <h2><%= @user.login -%></h2>
 
               <hr>
 
               <ul class="unstyled">
-                <li><%= current_user.login -%></li>
-                <li><%= current_user.login -%></li>
-                <li><%= current_user.login -%></li>
+                <li><%= @user.login -%></li>
+                <li><%= @user.login -%></li>
+                <li><%= @user.login -%></li>
               </ul>
 
               <hr>
-              <p><strong><%= current_user.repos_count -%></strong> public repos</p>
+              <p><strong><%= @user.repos_count -%></strong> public repos</p>
             </div>
           </div><!--/span-->
           <%- end -%>

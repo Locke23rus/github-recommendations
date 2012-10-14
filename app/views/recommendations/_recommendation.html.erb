@@ -1,10 +1,27 @@
 <div class="span8 js-recommendation">
   <% repo = recommendation.repo %>
-  <%= link_to repo.full_name, repo.url, :target => '_blank' %> <%= repo.language %>
-  <%= link_to '<i class="icon-remove"></i>'.html_safe, skip_recommendation_path(recommendation.id), :class => 'js-skip', :remote => true, :method => :put %>
+  <div class="row">
+    <div class="span5">
+      <h4 class="repo"><%= link_to repo.full_name, repo.url, :target => '_blank' %></h4>
+    </div>
 
-  <p><%= repo.description %></p>
-
+    <div class="span3">
+      <div class=" pull-right">
+        <%= repo.language %>
+        &nbsp;&nbsp;
+        <%= icon_tag('star') %> <%= repo.stars_count -%>
+        &nbsp;&nbsp;
+        <%= icon_tag('random') %> <%= repo.forks_count -%>
+        <%- if current_user && current_user.id == recommendation.user_id -%>
+        &nbsp;&nbsp;
+        <%= link_to icon_tag('remove'),
+                    skip_recommendation_path(recommendation.id),
+                    :class => 'js-skip', :remote => true, :method => :put %>
+        <%- end -%>
+      </div>
+    </div>
+  </div>
+  <p><%#= repo.description %></p>
   <% recommendation.scores_by_group.each do |action_type, scores| %>
     <div>
       <%= action_type.titleize %>:
@@ -13,6 +30,7 @@
       <% end %>
     </div>
   <% end %>
+
   <hr/>
 </div>
 
