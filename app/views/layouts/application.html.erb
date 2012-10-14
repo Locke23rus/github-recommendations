@@ -45,21 +45,22 @@
             <!--<span class="icon-bar"></span>-->
             <!--<span class="icon-bar"></span>-->
           <!--</a>-->
-          <a class="brand" href="#">Github Recommendation</a>
+          <a class="brand" href="/">Github Recommendation</a>
           <div class="container nav-collapse">
             <ul class="nav pull-right">
               <%- if signed_in? -%>
                 <li>
-                  <%= image_tag(current_user.avatar_url,
-                                :size => '32x32',
+                  <%= gravatar_image_tag(current_user.email,
+                                :gravatar => {:size => 30 },
                                 :class => 'img-rounded nav-avatar') %>
                 </li>
+                <li><%= link_to content_tag(:strong, current_user.login), user_path(current_user.login) -%></li>
               <%- end -%>
               <li>
                 <% if signed_in? %>
-                  <%= link_to 'Sign out', sign_out_path, :method => :delete %>
+                  <%= link_to 'sign out', sign_out_path, :method => :delete %>
                 <% else %>
-                  <%= link_to 'Sign in', '/auth/github' %>
+                  <%= link_to 'sign in', '/auth/github' %>
                 <% end %>
               </li>
             </ul>
@@ -74,18 +75,28 @@
     <div class="container">
       <div class="content">
         <div class="row">
-          <div class="span4">
-            <div class="well sidebar-nav">
-              <h3>Sidebar</h3>
-              <ul class="nav nav-list">
-                <li class="nav-header">Sidebar</li>
-                <li><%= link_to "Link1", "/path1"  %></li>
-                <li><%= link_to "Link2", "/path2"  %></li>
-                <li><%= link_to "Link3", "/path3"  %></li>
+          <% if signed_in? %>
+          <div class="span3">
+            <div class=" sidebar-nav">
+              <%= gravatar_image_tag(current_user.email,
+                                     :gravatar => {:size => 270 },
+                                     :class => 'img-rounded nav-avatar') %>
+              <h2><%= current_user.login -%></h2>
+
+              <hr>
+
+              <ul class="unstyled">
+                <li><%= current_user.login -%></li>
+                <li><%= current_user.login -%></li>
+                <li><%= current_user.login -%></li>
               </ul>
-            </div><!--/.well -->
+
+              <hr>
+              <p><strong><%= current_user.repos_count -%></strong> public repos</p>
+            </div>
           </div><!--/span-->
-          <div class="span8">
+          <%- end -%>
+          <div class="span9">
             <%= yield %>
           </div>
         </div><!--/row-->

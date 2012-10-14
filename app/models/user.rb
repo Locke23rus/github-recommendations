@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
 
   validates :login, :presence => true, :uniqueness => true
 
+  scope :enabled, where('authorized_at IS NOT NULL')
+
   def self.find_or_update_with_omniauth!(auth)
     user = User.find_by_id(auth[:uid])
     if user && !user.activated?

@@ -6,4 +6,6 @@ GithubRecommendation::Application.routes.draw do
   delete '/sign_out' => 'sessions#destroy'
 
   mount Sidekiq::Web, at: '/sidekiq'
+
+  get "/:id" => "users#show", :as => :user
 end
