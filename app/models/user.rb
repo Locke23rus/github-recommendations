@@ -10,6 +10,20 @@ class User < ActiveRecord::Base
 
   validates :login, :presence => true, :uniqueness => true
 
+  def self.find_or_update_with_omniauth!(auth)
+    user = User.find_by_id(auth[:uid])
+    if user && !user.activated?
+      user.email = auth[:info][:email]
+      user.full_name = auth[:info][:name]
+      user.token = auth[:credentials][:token]
+      user.followings_count = auth[:extra][:raw_info][:following]
+      user.repos_count = auth[:extra][:raw_info][:public_repos]
+      user.authorized_at = DateTime.current
+      user.save!
+    end
+    user
+  end
+
   def self.create_with_omniauth!(auth)
     create! do |user|
       user.id = auth[:uid]
