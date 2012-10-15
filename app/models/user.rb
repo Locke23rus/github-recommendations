@@ -121,4 +121,8 @@ class User < ActiveRecord::Base
     processed_at.blank? || processed_at < 1.day.ago
   end
 
+  def url
+    "https://github.com/#{login}"
+  end
+
 end

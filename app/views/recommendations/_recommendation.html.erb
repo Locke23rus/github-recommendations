@@ -21,13 +21,19 @@
       </div>
     </div>
   </div>
-  <p><%#= repo.description %></p>
+  <p><%= repo.description %></p>
   <% recommendation.scores_by_group.each do |action_type, scores| %>
     <dl class="dl-horizontal scores">
       <dt><%= action_type.titleize %>:</dt>
       <dd>
         <% scores.each do |score| %>
-          <%= image_tag score.user.avatar_url, :size => '30x30', :class => "avatar", :title => score.user.login %>
+          <%= link_to image_tag(score.user.avatar_url,
+                                :size => '30x30',
+                                :class => 'avatar'),
+                      score.user.url,
+                      :rel => 'tooltip',
+                      :title => score.user.login,
+                      :target => '_blank' %>
         <% end %>
       </dd>
     </dl>
